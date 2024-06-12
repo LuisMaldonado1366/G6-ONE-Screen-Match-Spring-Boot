@@ -1,6 +1,8 @@
 package com.aluracursos.screenmatch;
 
+import com.aluracursos.screenmatch.models.SeriesData;
 import com.aluracursos.screenmatch.service.APIConsume;
+import com.aluracursos.screenmatch.service.ParseData;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -28,7 +30,11 @@ public class ScreenmatchApplication implements CommandLineRunner {
 		String url = "http://www.omdbapi.com/?apikey=" + token + "&t=" +
 				URLEncoder.encode("White collar", StandardCharsets.UTF_8);
 		String json = apiConsume.getData(url);
-		System.out.println(json);
 
+		System.out.println(json);
+		ParseData parseData = new ParseData();
+
+		var data = parseData.parseData(json, SeriesData.class);
+		System.out.println(data);
 	}
 }
