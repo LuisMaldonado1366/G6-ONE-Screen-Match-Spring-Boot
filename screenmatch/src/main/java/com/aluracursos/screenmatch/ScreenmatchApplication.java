@@ -1,5 +1,9 @@
 package com.aluracursos.screenmatch;
 
+import com.aluracursos.screenmatch.main.Main;
+import com.aluracursos.screenmatch.main.StreamsExample;
+import com.aluracursos.screenmatch.models.EpisodeData;
+import com.aluracursos.screenmatch.models.SeasonData;
 import com.aluracursos.screenmatch.models.SeriesData;
 import com.aluracursos.screenmatch.service.APIConsume;
 import com.aluracursos.screenmatch.service.ParseData;
@@ -8,10 +12,10 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.net.URI;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootApplication
 public class ScreenmatchApplication implements CommandLineRunner {
@@ -26,15 +30,11 @@ public class ScreenmatchApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		APIConsume apiConsume = new APIConsume();
-		String url = "http://www.omdbapi.com/?apikey=" + token + "&t=" +
-				URLEncoder.encode("White collar", StandardCharsets.UTF_8);
-		String json = apiConsume.getData(url);
+//		Main main = new Main();
+//		main.displayMenu();
 
-		System.out.println(json);
-		ParseData parseData = new ParseData();
+		StreamsExample streamsExample = new StreamsExample();
 
-		var data = parseData.parseData(json, SeriesData.class);
-		System.out.println(data);
+		streamsExample.showExmaple();
 	}
 }
