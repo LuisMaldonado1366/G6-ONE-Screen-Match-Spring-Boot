@@ -1,5 +1,6 @@
 package com.aluracursos.screenmatch.main;
 
+import com.aluracursos.screenmatch.models.Episode;
 import com.aluracursos.screenmatch.models.EpisodeData;
 import com.aluracursos.screenmatch.models.SeasonData;
 import com.aluracursos.screenmatch.models.SeriesData;
@@ -11,8 +12,10 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -42,6 +45,24 @@ public class Main {
             seasons.add(seasonsData);
         }
 
-        seasons.forEach(season -> season.episodes().forEach(episode -> System.out.println(episode.title())));
+//        seasons.forEach(season -> season.episodes().forEach(episode -> System.out.println(episode.title())));
+
+        List<EpisodeData> dataEpisodes = seasons.stream()
+                .flatMap(season -> season.episodes().stream())
+                .collect(Collectors.toList());
+
+        System.out.println("Episodes Top 5:");
+        dataEpisodes.stream()
+                .filter(episode -> !episode.rating().equalsIgnoreCase("N/A"))
+                .sorted(Comparator.comparing(EpisodeData::rating).reversed())
+                .limit(5)
+                .forEach(System.out::println);
+
+        List<Episode> episodes = seasons.stream()
+                .flatMap(season -> season.episodes().stream()
+                        .map(episode -> new Episode(episode.episodeNumber(), episode)))
+                .collect(Collectors.toList());
+
+        episodes.forEach(System.out::println);
     }
 }

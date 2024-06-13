@@ -30,11 +30,10 @@ public class ScreenmatchApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-//		Main main = new Main();
-//		main.displayMenu();
+		Main main = new Main();
+		main.displayMenu();
 
-		StreamsExample streamsExample = new StreamsExample();
-
-		streamsExample.showExmaple();
+//		StreamsExample streamsExample = new StreamsExample();
+//		streamsExample.showExmaple();
 	}
 }
