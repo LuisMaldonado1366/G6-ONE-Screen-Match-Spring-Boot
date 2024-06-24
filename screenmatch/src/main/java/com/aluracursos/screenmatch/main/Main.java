@@ -11,10 +11,10 @@ import io.github.cdimascio.dotenv.Dotenv;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class Main {
@@ -51,18 +51,67 @@ public class Main {
                 .flatMap(season -> season.episodes().stream())
                 .collect(Collectors.toList());
 
-        System.out.println("Episodes Top 5:");
-        dataEpisodes.stream()
-                .filter(episode -> !episode.rating().equalsIgnoreCase("N/A"))
-                .sorted(Comparator.comparing(EpisodeData::rating).reversed())
-                .limit(5)
-                .forEach(System.out::println);
+//        System.out.println("Top 5 Episodes:");
+//        dataEpisodes.stream()
+//                .filter(episode -> !episode.rating().equalsIgnoreCase("N/A"))
+//                .peek(episode -> System.out.println("First: Filter 'N/A' ratings" + episode))
+//                .sorted(Comparator.comparing(EpisodeData::rating).reversed())
+//                .peek(episode -> System.out.println("Second: Sorting ratings." + episode))
+//                .map(episode -> episode.title().toUpperCase())
+//                .peek(episode -> System.out.println("Third: Title to uppercase" + episode))
+//                .limit(5)
+//                .forEach(System.out::println);
 
         List<Episode> episodes = seasons.stream()
                 .flatMap(season -> season.episodes().stream()
                         .map(episode -> new Episode(episode.episodeNumber(), episode)))
                 .collect(Collectors.toList());
 
-        episodes.forEach(System.out::println);
+//        episodes.forEach(System.out::println);
+
+//        System.out.println("Please, enter the year thereupon to look for episodes:");
+//        int inputYear = scanner.nextInt();
+//        scanner.nextLine();
+//
+//        LocalDate localDate = LocalDate.of(inputYear, 1,1);
+
+//        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+//        episodes.stream()
+//                .filter(episode -> episode.getReleaseDate() != null &&
+//                        episode.getReleaseDate().isAfter(localDate))
+//                .forEach(episode -> System.out.println(
+//                        "Season: " + episode.getSeason() +
+//                                "\tEpisode: " + episode.getEpisodeNumber() +
+//                                "\tTitle: " + episode.getTitle() +
+//                                "\tRelease date: " + episode.getReleaseDate().format(dateTimeFormatter)
+//                ));
+
+//        System.out.println("Enter a keyword or the complete title to look for: ");
+//        String partialTitle = scanner.nextLine();
+//
+//        Optional<Episode> lookupEpisode = episodes.stream()
+//                .filter(episode -> episode.getTitle().toUpperCase().contains(partialTitle.toUpperCase()))
+//                .findFirst();
+//
+//        if (lookupEpisode.isPresent()) {
+//            System.out.println("Found match: ");
+//            System.out.println("\t The data is: " + lookupEpisode.get());
+//        } else {
+//            System.out.println("Episode not found!");
+//        }
+
+        Map<Integer, Double> evaluationsPerSeason = episodes.stream()
+                .filter(episode -> episode.getRating() > 0.0)
+                .collect(Collectors.groupingBy(Episode::getSeason, Collectors.averagingDouble(Episode::getRating)));
+
+        System.out.println(evaluationsPerSeason);
+
+        DoubleSummaryStatistics statistics = episodes.stream()
+                .filter(episode -> episode.getRating() > 0.0)
+                .collect(Collectors.summarizingDouble(Episode::getRating));
+        System.out.println("Mean rating: " + statistics.getAverage());
+        System.out.println("Highest rating: " + statistics.getMax());
+        System.out.println("Lowest rating: " + statistics.getMin());
+
     }
 }
